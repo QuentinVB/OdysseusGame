@@ -21,7 +21,6 @@ namespace Odysseus.Core
 
         public override string Display {
             get {
-
                 switch (_questType)
                 {
                     case QuestType.Start: return "Its the begining";
@@ -31,12 +30,10 @@ namespace Odysseus.Core
             }
         }
 
-        public override string Choices { get { Active = false; return ""; } }
 
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            throw new NotImplementedException();
-
+            Active = false;
         }
     }
 }

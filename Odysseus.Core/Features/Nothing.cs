@@ -11,14 +11,12 @@ namespace Odysseus.Core
         public Nothing(GameCore core) : base(core)
         {
         }
-
+        //TODO : Add more depressing sentences
         public override string Display => "Nothing else than the emptiness of space...";
 
-        public override string Choices { get { Active = false; return ""; } }
-
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            throw new NotImplementedException();
+            Active = false;
         }
     }
 }

@@ -23,54 +23,56 @@ namespace Odysseus.Core
             {
                 _cargoBay.Add(core.GenerateCargo());
             }
+
+            Choices = 
+            
+            Results = new string[3]
+            {
+                "You leave the noisy market",
+                $"You load the goods and leave",
+                $"You transfert the cargo and leave",
+
+            };
         }
 
-        public override string Display => "An shop space station, your oxygen is refilled while you peek to the traders cargos";
-
-        public override string Choices
+        public override string Display => "An shop space station, your oxygen is refilled while you peek to the traders cargos";  
+        public override string[] Choices
         {
-            get
-            {
-                Core.PlayerShip.FillOxygen();
-
-                string choices = "";
-
-                
+            get { 
+                 string[] table=   new string[_cargoBay.Count + Core.PlayerShip.CargoIdx];
 
                 for (int i = 0; i < _cargoBay.Count; i++)
                 {
-                    choices += $" {i}. Buy {_cargoBay[i]} for {Math.Round(_cargoBay[i].Price* _sellFactor)}\n";
+                    table[i] = $"Buy {_cargoBay[i]} for {Math.Round(_cargoBay[i].Price * _sellFactor)}";
                 }
 
+                //TODO: optimization
                 for (int j = 0; j < Core.PlayerShip.Cargo.Length; j++)
                 {
-                    if(Core.PlayerShip.Cargo[j].Quantity>0) choices += $" {j+ _cargoBay.Count}. Sell {Core.PlayerShip.Cargo[j]} for {Math.Round(Core.PlayerShip.Cargo[j].Price* _buyFactor)} \n";
+                    if (Core.PlayerShip.Cargo[j].Quantity > 0)
+                        table[_cargoBay.Count + j] = $"Sell {Core.PlayerShip.Cargo[j]} for {Math.Round(Core.PlayerShip.Cargo[j].Price * _buyFactor)}";
                 }
-
-                return choices;
+                return table;
             }
         }
-
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            if(Int32.TryParse(answer, out int castAnswer))
+            Core.PlayerShip.FillOxygen();
+            
+            if (answer >= 0 && answer < _cargoBay.Count)
             {
-                if (castAnswer >= 0 && castAnswer < _cargoBay.Count)
-                {
-                    Core.PlayerShip.LoadCargo(_cargoBay[castAnswer]);
-                    Core.PlayerShip.LoseMoney(Math.Round(_cargoBay[castAnswer].Price * _sellFactor));
-                }
-
-                if (castAnswer >= _cargoBay.Count && castAnswer < Core.PlayerShip.Cargo.Length)
-                {
-                    Core.PlayerShip.GainMoney(Math.Round(Core.PlayerShip.Cargo[castAnswer - _cargoBay.Count].Price * _buyFactor));
-
-                    Core.PlayerShip.UnLoadCargo(castAnswer - _cargoBay.Count);
-
-                }
+                ResultIndex = 1;
+                Core.PlayerShip.LoadCargo(_cargoBay[answer]);
+                Core.PlayerShip.LoseMoney(Math.Round(_cargoBay[answer].Price * _sellFactor));
             }
 
-            
+            if (answer >= _cargoBay.Count && answer < Core.PlayerShip.Cargo.Length)
+            {
+                ResultIndex = 2;
+
+                Core.PlayerShip.GainMoney(Math.Round(Core.PlayerShip.Cargo[answer - _cargoBay.Count].Price * _buyFactor));
+                Core.PlayerShip.UnLoadCargo(answer - _cargoBay.Count);
+            }
 
             Active = false;
         }

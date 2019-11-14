@@ -8,24 +8,35 @@ namespace Odysseus.Core
 {
     public class AlienTech : Feature
     {
-        GameCore _core;
 
         public AlienTech(GameCore core) : base(core)
         {
-            this._core = core;
             //enum for target (hull/fuel eff/etc)
             //_price = Math.Round(Core.Random.NextDouble() * 50);
+            Choices = new string[2]
+            {
+                "Plug the equipement to the engine",
+                "Leave"
+            };
+            Results = new string[2]
+            {
+                "The artifact drift by in to darkness",
+                "The ship fuel consumption is increased"
 
+            };
         }
 
         public override string Display => $"A strange alien equipement, the scans reveals it will increase the engine fuel consumption by 10%";
 
-        public override string Choices => $" 1. Plug the equipement to the engine \n 2. Leave";
-
-        public override void Answer(string answer)
+        public override void Answer(int choiceIndex)
         {
-            if(answer =="1")_core.PlayerShip.IncreaseEngine(0.1);
-            Active = false;
+            if (choiceIndex == 0)
+            {
+                ResultIndex = 1;
+
+                Core.PlayerShip.IncreaseEngine(0.1);
+            }
+            if (choiceIndex >=0)  Active = false;
         }
     }
 }

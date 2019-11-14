@@ -50,6 +50,7 @@ namespace Odysseus.Core
         public double Money { get => _money; }
         public Atom FuelType { get => _fuelType; }
         public double Fuel { get => _fuel; }
+        internal int CargoIdx { get => _cargoIdx;  }
 
         internal void BoardCrew(int crew)
         {
