@@ -34,7 +34,7 @@ namespace Odysseus.Core
 
         public override void Answer(int choiceIndex)
         {
-            if (choiceIndex == 0&& ResultIndex == 0) {
+            if (choiceIndex == 0 && ResultIndex == 0) {
 
                 if(Core.Random.NextDouble()>0.6)
                 {
@@ -47,10 +47,9 @@ namespace Odysseus.Core
                     Core.PlayerShip.RemoveCrew(_loss);
                 }
             }
-            else
-            {
-                if (choiceIndex >= 0) Active = false;
-            }   
+            
+             if (choiceIndex >= 0) Active = false;
+             
         }  
     }
 }

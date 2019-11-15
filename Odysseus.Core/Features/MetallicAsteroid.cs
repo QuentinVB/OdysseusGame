@@ -36,7 +36,7 @@ namespace Odysseus.Core
                 Core.PlayerShip.LoadCargo(_cargo);
                 Core.PlayerShip.LoseMoney(Math.Round(_cargo.Price * 0.1));
             }
-            if (answer > 0) Active = false;
+            Active = false;
         }
     }
 }

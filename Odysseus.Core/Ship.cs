@@ -89,8 +89,8 @@ namespace Odysseus.Core
 
         public bool LoadCargo(Cargo cargo)
         {
-            if (_cargoIdx > _cargoBay.Length) return false;
-
+            if (_cargoIdx > _cargoBay.Length-1) return false;
+            //TODO : out of range
             _cargoBay[_cargoIdx] = cargo;
             _cargoIdx++;
             return true;

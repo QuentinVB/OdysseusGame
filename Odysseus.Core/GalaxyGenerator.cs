@@ -12,17 +12,13 @@ namespace Odysseus.Core
         int _systemCount;
         int _systemMaxAmount;
 
-
-
         public GalaxyGenerator(GameCore gameCore, int systemMaxDepth)
         {
             this._systemCount = 0;
             this._systemMaxAmount = systemMaxDepth * 2;
             this.gameCore = gameCore;
         }
-
-
-        
+   
         public StellarSystem GetRoot()
         {
             StellarSystem root = new StellarSystem(
@@ -70,7 +66,7 @@ namespace Odysseus.Core
                 }
             }
             
-            return new ShopCargo(gameCore);
+            return new AlienTemple(gameCore);
         }
     }
 }
