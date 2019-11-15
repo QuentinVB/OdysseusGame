@@ -12,7 +12,6 @@ namespace Odysseus.CLI
         static void Main(string[] args)
         {
             GameCore gamecore = new GameCore(50);
-
             do
             {
                 Console.Clear();
@@ -60,7 +59,6 @@ namespace Odysseus.CLI
                                 break;
                         }
                     }
-
                     gamecore.PlayerShip.UpdateGameTurn();
                 }
                 else
@@ -68,9 +66,6 @@ namespace Odysseus.CLI
                     Console.WriteLine("Game Over");
                     Console.ReadLine();
                 }
-
-
-
             } while (true);
 
         }

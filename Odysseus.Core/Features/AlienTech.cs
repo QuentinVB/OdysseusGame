@@ -22,7 +22,6 @@ namespace Odysseus.Core
             {
                 "The artifact drift by in to darkness",
                 "The ship fuel consumption is increased"
-
             };
         }
 
