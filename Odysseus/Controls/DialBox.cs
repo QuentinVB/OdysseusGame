@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Odysseus.Core;
 
 namespace Odysseus.Controls
 {
@@ -33,25 +34,25 @@ namespace Odysseus.Controls
 
         public Color PenColour { get; set; }
 
-        public Vector2 Position { get; set; }
 
-        public Rectangle Rectangle
-        {
-            get
-            {
-                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);
-            }
-        }
+        public Rectangle Rectangle { get; private set; }
+        
+        public Feature FeatureAttached { get; set; }
 
-        public string Text { get; set; }
+        private string Display { get => FeatureAttached.Display; }
+        private string[] Choices { get => FeatureAttached.Choices; }
+        private string Result { get => FeatureAttached.Result; }
+        public bool IsFeatureActive { get => FeatureAttached.Active; }
 
         #endregion
 
         #region Methods
 
-        public DialBox(string name, Texture2D texture, SpriteFont font):base(name)
+        public DialBox(string name, Texture2D texture, SpriteFont font, Rectangle rectangle) :base(name)
         {
             _texture = texture;
+
+            this.Rectangle = rectangle;
 
             _font = font;
 
@@ -66,14 +67,14 @@ namespace Odysseus.Controls
                 colour = Color.Gray;
 
             spriteBatch.Draw(_texture, Rectangle, colour);
-
-            if (!string.IsNullOrEmpty(Text))
+            /*
+            if (!string.IsNullOrEmpty(DisplayText))
             {
-                var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(Text).X / 2);
-                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(Text).Y / 2);
+                var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(DisplayText).X / 2);
+                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(DisplayText).Y / 2);
 
-                spriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
-            }
+                spriteBatch.DrawString(_font, DisplayText, new Vector2(x, y), PenColour);
+            }*/
         }
 
         public override void Update(GameTime gameTime)
