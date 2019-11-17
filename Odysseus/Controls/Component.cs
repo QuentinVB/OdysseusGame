@@ -10,17 +10,26 @@ namespace Odysseus.Controls
 {
     public abstract class Component
     {
-        readonly string  _name;
-        public Component(string name)
+        private readonly GraphicsDeviceManager _graphics;
+        private readonly string _name;
+
+        public Component(string name, GraphicsDeviceManager graphics)
         {
+            this._graphics = graphics;
             this._name = name;
+
+            MonoColorRect = new Texture2D(Graphics.GraphicsDevice, 1, 1);
+            MonoColorRect.SetData(new[] { Color.White });
         }
 
         public string Name => _name;
+        protected GraphicsDeviceManager Graphics => _graphics;
 
-        public abstract void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch);
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
         public abstract void Update(GameTime gameTime);
-
         public bool IsVisible { get; set; }
+
+        protected Texture2D MonoColorRect { get; set; }
+
     }
 }

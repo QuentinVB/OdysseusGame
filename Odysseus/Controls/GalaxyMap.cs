@@ -10,6 +10,7 @@ using Odysseus.Core;
 
 namespace Odysseus.Controls
 {
+    /*
     public class GalaxyMap : Component
     {
         #region Fields
@@ -139,4 +140,5 @@ namespace Odysseus.Controls
 
         #endregion
     }
+    */
 }

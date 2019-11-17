@@ -10,53 +10,36 @@ using Odysseus.Core;
 
 namespace Odysseus.Controls
 {
-    public class DialBox : Component
+    public class DialBox : TextComponent
     {
         #region Fields
-
-        private MouseState _currentMouse;
-
-        private SpriteFont _font;
-
-        private bool _isHovering;
-
-        private MouseState _previousMouse;
-
-        private Texture2D _texture;
 
         private Feature _feature;
 
         private Button[] _actionButtons;
 
-
         #endregion
 
         #region Properties
-
-        public event EventHandler Click;
-
-        public bool Clicked { get; private set; }
-
-        public Color PenColour { get; set; }
-
-        public Rectangle Box { get; private set; }
-
-
 
         public Feature FeatureAttached { get=>_feature; set
             {
                 _feature = value;
                 ActionButtons = new Button[Choices.Length];
+                Text = Display;
+
                 for (int i = 0; i < Choices.Length; i++)
                 {
-                    ActionButtons[i] = new Button(i.ToString(), _texture, _font)
+                    ActionButtons[i] = new Button(
+                        i.ToString(), 
+                        Graphics, 
+                        Font, 
+                        new Rectangle(Box.X, Box.Y + (i * 30) + (int)TextHeight, Box.Width, 20))
                     {
-                        Position = new Vector2(Box.X, Box.Y + (i * 64) +40),
                         Text = Choices[i]
                     };
                     ActionButtons[i].Click += ActionButton_Click;
                 }
-                Text = Display;
             }
         }
 
@@ -67,27 +50,23 @@ namespace Odysseus.Controls
         private string Result { get => FeatureAttached.Result; }
         public bool IsFeatureActive { get => FeatureAttached.Active; }
         private Button[] ActionButtons { get=> _actionButtons ?? new Button[0]; set=> _actionButtons=value; }
-        public string Text { get; private set; }
 
         #endregion
 
         #region Methods
 
-        public DialBox(string name, Texture2D texture, SpriteFont font, Rectangle rectangle) :base(name)
+        public DialBox(string name, GraphicsDeviceManager graphics, SpriteFont font, Rectangle rectangle) 
+            :base(name, graphics, font, rectangle)
         {
-            _texture = texture;
-
-            this.Box = rectangle;
 
             IsVisible = false;
 
-            _font = font;
-
-            PenColour = Color.White;
-
-            CloseButton = new Button("closeButton", _texture, _font)
+            CloseButton = new Button(
+                "closeButton", 
+                Graphics,
+                Font, 
+                new Rectangle(Box.X, Box.Y + Box.Height - 64,64,64))
             {
-                Position = new Vector2(Box.X, Box.Y+Box.Height-64),
                 Text = "Close"
             };
             CloseButton.Click += Close_click;
@@ -97,7 +76,7 @@ namespace Odysseus.Controls
         {
             if (sender is Button buttonCliked)
             {
-                Console.WriteLine("close");
+                Console.WriteLine("close dialbox");
                 IsVisible = false;
             }
         }
@@ -130,30 +109,26 @@ namespace Odysseus.Controls
 
 
 
-        public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
             if(IsVisible)
             {
                 var colour = Color.White;
-                spriteBatch.Draw(_texture, Box, colour);
+                spriteBatch.Draw(Texture??MonoColorRect, Box, colour);
 
                 if (FeatureAttached != null)
                 {
-                    spriteBatch.DrawString(_font, Text, new Vector2(Box.X+10, Box.Y+10), PenColour);
+                    spriteBatch.DrawString(Font, Text, new Vector2(Box.X+10, Box.Y+10), PenColour);
                     if(FeatureAttached.Active)
                     {
                         foreach (var component in ActionButtons)
-                            component.Draw(gameTime, graphics, spriteBatch);
+                            component.Draw(gameTime, spriteBatch);
                     }
                     else
                     {
-                        CloseButton.Draw(gameTime, graphics, spriteBatch);
-                    }
-                    
-                }
-
-
-                
+                        CloseButton.Draw(gameTime, spriteBatch);
+                    }                  
+                }   
             }                     
         }
 
