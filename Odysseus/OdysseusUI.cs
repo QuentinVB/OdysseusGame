@@ -78,17 +78,20 @@ namespace Odysseus
             _ship = Content.Load<Texture2D>("Sprites/ship");
 
             // TODO: use this.Content to load your game content here
-            var nextButton = new Button("next",Content.Load<Texture2D>("Controls/Button"), Content.Load<SpriteFont>("Fonts/Font"))
+            var nextButton = new Button("StarMap", Content.Load<Texture2D>("Controls/Button"), Content.Load<SpriteFont>("Fonts/Font"))
             {
-                Position = new Microsoft.Xna.Framework.Vector2(350, 200),
-                Text = "Next",
+                Position = new Microsoft.Xna.Framework.Vector2(0, 180),
+                Text = "Star Map",
+                IsVisible = false
             };
             nextButton.Click += Next_Click;
 
             var quitButton = new Button("quit",Content.Load<Texture2D>("Controls/Button"), Content.Load<SpriteFont>("Fonts/Font"))
             {
-                Position = new Microsoft.Xna.Framework.Vector2(350, 250),
+                Position = new Microsoft.Xna.Framework.Vector2(0, screenW-64),
                 Text = "Quit",
+                IsVisible = true
+
             };
             quitButton.Click += QuitButton_Click;
 
@@ -106,24 +109,47 @@ namespace Odysseus
                 PenColour = Color.Lime,
                 Position =Vector2.Zero,
                 Text = "ShipConsole",
-            };
+                IsVisible = true
 
-            var comConsole = new SimpleTextDisplay("comConsole", Content.Load<SpriteFont>("Fonts/Font"))
+            };
+            
+
+            var dialBox = new DialBox(
+                "dialbox",
+                Content.Load<Texture2D>("Controls/Button"),
+                Content.Load<SpriteFont>("Fonts/Font"),
+                new Rectangle(
+                    (int)(screenW * 0.6),
+                    (int)(screenH * 0.3),
+                    400,
+                    250
+                    )
+                );
+
+            var galaxyMap = new GalaxyMap(
+                "galaxyMap",
+                Content.Load<Texture2D>("Sprites/galaxy"),
+                Content.Load<SpriteFont>("Fonts/Font"),
+                new Rectangle(
+                    (int)(screenW * 0.25),
+                    (int)(screenH * 0.1),
+                    (int)(screenW * 0.5),
+                    (int)(screenH * 0.5)
+
+                    )
+
+                )
             {
-                Width = 400,
-                Height = 180,
-                PenColour = Color.Lime,
-                Position = new Vector2(screenW*0.6f, screenH*0.3f),
-                Text = "Com",
-            };
-
+                IsVisible = true
+             };
 
             _gameComponents = new List<Component>()
             {
                 nextButton,
                 quitButton,
                 shipConsole,
-                comConsole
+                dialBox,
+                galaxyMap
             };
         }
         private void QuitButton_Click(object sender, System.EventArgs e)
@@ -158,18 +184,34 @@ namespace Odysseus
 
             if (Core.PlayerShip.IsAlive)
             {
-                Console.WriteLine("Alive");
 
-                //Core.GenerateNextDestinations();
+                Core.GenerateNextDestinations();
 
                 ((SimpleTextDisplay)(_gameComponents.Find(x=>x.Name == "shipConsole"))).Text= Core.PlayerShip.ToString();
 
-                
+                var dialbox = ((DialBox)(_gameComponents.Find(x => x.Name == "dialbox")));
                 if (Core.PlayerShip.Orbiting.Feature.Active)
                 {
-                    ((SimpleTextDisplay)(_gameComponents.Find(x => x.Name == "comConsole"))).Text = Core.PlayerShip.Orbiting.Feature.Display;
+                    dialbox.IsVisible = true;
+
+
+                    if (dialbox.FeatureAttached==null)
+                    {
+                        dialbox.FeatureAttached = Core.PlayerShip.Orbiting.Feature;
+                    }
+
+                    //dialbox.IsVisible = false;
+                    //((SimpleTextDisplay)(_gameComponents.Find(x => x.Name == "comConsole"))).Text = Core.PlayerShip.Orbiting.Feature.Display;
 
                     //Console.WriteLine(Core.PlayerShip.Orbiting.Feature.Choices);
+                }
+                else
+                {
+                    if(!dialbox.IsVisible)
+                    {
+                        ((Button)(_gameComponents.Find(x => x.Name == "StarMap"))).IsVisible = true;
+
+                    }
                 }
                 /*
                 else
@@ -208,7 +250,7 @@ namespace Odysseus
             }
 
             foreach (var component in _gameComponents)
-                component.Update(gameTime);
+                if(component.IsVisible)component.Update(gameTime);
 
             // TODO: Add your update logic here
             _shipPos = new Vector2(screenW / 3, (screenH / 2)+ 2*(float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * 0.001));
@@ -237,7 +279,7 @@ namespace Odysseus
             SpriteBatch.Draw(_ship, _shipPos, Color.White);
             
             foreach (var component in _gameComponents)
-                component.Draw(gameTime, Graphics, SpriteBatch);
+                if (component.IsVisible) component.Draw(gameTime, Graphics, SpriteBatch);
             SpriteBatch.End();
 
             base.Draw(gameTime);

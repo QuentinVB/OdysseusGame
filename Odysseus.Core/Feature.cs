@@ -15,12 +15,12 @@ namespace Odysseus.Core
         private int _resultIndex=0;
 
         public abstract string Display { get; }
-        public virtual string[] Choices { get { return _choices ?? new string[0]; } protected set => _choices = value; }
+        public virtual string[] Choices { get { return _choices ?? new string[1] { "Continue" }; } protected set => _choices = value; }
         public bool Active { get => _active; protected set => _active = value; }
         protected GameCore Core => _core;
 
         public string Result => _results[ResultIndex] ?? "" ;
-        protected string[] Results { get => _results ?? new string[1] { "Continue" };  set => _results = value; }
+        protected string[] Results { get => _results ?? new string[0];  set => _results = value; }
         internal int ResultIndex { get=> _resultIndex; set => _resultIndex=value; }
 
         public abstract void Answer(int choiceIndex);

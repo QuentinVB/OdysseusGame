@@ -20,5 +20,7 @@ namespace Odysseus.Controls
 
         public abstract void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch);
         public abstract void Update(GameTime gameTime);
+
+        public bool IsVisible { get; set; }
     }
 }

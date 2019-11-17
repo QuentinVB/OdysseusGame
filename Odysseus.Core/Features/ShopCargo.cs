@@ -24,7 +24,6 @@ namespace Odysseus.Core
                 _cargoBay.Add(core.GenerateCargo());
             }
 
-            Choices = 
             
             Results = new string[3]
             {
@@ -39,7 +38,7 @@ namespace Odysseus.Core
         public override string[] Choices
         {
             get { 
-                 string[] table=   new string[_cargoBay.Count + Core.PlayerShip.CargoIdx];
+                 string[] table=new string[_cargoBay.Count + Core.PlayerShip.CargoIdx+1];
 
                 for (int i = 0; i < _cargoBay.Count; i++)
                 {
@@ -52,6 +51,7 @@ namespace Odysseus.Core
                     if (Core.PlayerShip.Cargo[j].Quantity > 0)
                         table[_cargoBay.Count + j] = $"Sell {Core.PlayerShip.Cargo[j]} for {Math.Round(Core.PlayerShip.Cargo[j].Price * _buyFactor)}";
                 }
+                table[table.Length - 1] = "Leave";
                 return table;
             }
         }
@@ -66,13 +66,15 @@ namespace Odysseus.Core
                 Core.PlayerShip.LoseMoney(Math.Round(_cargoBay[answer].Price * _sellFactor));
             }
 
-            if (answer >= _cargoBay.Count && answer < Core.PlayerShip.Cargo.Length)
+            if (answer >= _cargoBay.Count && answer < _cargoBay.Count+Core.PlayerShip.Cargo.Length)
             {
                 ResultIndex = 2;
 
                 Core.PlayerShip.GainMoney(Math.Round(Core.PlayerShip.Cargo[answer - _cargoBay.Count].Price * _buyFactor));
                 Core.PlayerShip.UnLoadCargo(answer - _cargoBay.Count);
             }
+
+            ResultIndex = 0;
 
             Active = false;
         }

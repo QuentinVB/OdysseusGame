@@ -25,7 +25,7 @@ namespace Odysseus.Core
                 StellarObject.YellowDwarf,
                 gameCore.Random.NextDouble() * 100,
                 new Vector2(0, 0),
-                new Quest(gameCore, QuestType.Start)
+                new GasGiant(gameCore)//new Quest(gameCore, QuestType.Start)
             );          
 
             return root;

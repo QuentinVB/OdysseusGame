@@ -55,7 +55,7 @@ namespace Odysseus.Controls
 
             _font = font;
 
-            PenColour = Color.Black;
+            PenColour = Color.White;
         }
 
         public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
@@ -80,8 +80,9 @@ namespace Odysseus.Controls
         {
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();
+            
 
-            var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
+           var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
 
             _isHovering = false;
 

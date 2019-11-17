@@ -24,6 +24,11 @@ namespace Odysseus.Controls
 
         private Texture2D _texture;
 
+        private Feature _feature;
+
+        private Button[] _actionButtons;
+
+
         #endregion
 
         #region Properties
@@ -34,15 +39,35 @@ namespace Odysseus.Controls
 
         public Color PenColour { get; set; }
 
+        public Rectangle Box { get; private set; }
 
-        public Rectangle Rectangle { get; private set; }
-        
-        public Feature FeatureAttached { get; set; }
+
+
+        public Feature FeatureAttached { get=>_feature; set
+            {
+                _feature = value;
+                ActionButtons = new Button[Choices.Length];
+                for (int i = 0; i < Choices.Length; i++)
+                {
+                    ActionButtons[i] = new Button(i.ToString(), _texture, _font)
+                    {
+                        Position = new Vector2(Box.X, Box.Y + (i * 64) +40),
+                        Text = Choices[i]
+                    };
+                    ActionButtons[i].Click += ActionButton_Click;
+                }
+                Text = Display;
+            }
+        }
+
+        private Button CloseButton { get; set; }
 
         private string Display { get => FeatureAttached.Display; }
         private string[] Choices { get => FeatureAttached.Choices; }
         private string Result { get => FeatureAttached.Result; }
         public bool IsFeatureActive { get => FeatureAttached.Active; }
+        private Button[] ActionButtons { get=> _actionButtons ?? new Button[0]; set=> _actionButtons=value; }
+        public string Text { get; private set; }
 
         #endregion
 
@@ -52,50 +77,87 @@ namespace Odysseus.Controls
         {
             _texture = texture;
 
-            this.Rectangle = rectangle;
+            this.Box = rectangle;
+
+            IsVisible = false;
 
             _font = font;
 
-            PenColour = Color.Black;
+            PenColour = Color.White;
+
+            CloseButton = new Button("closeButton", _texture, _font)
+            {
+                Position = new Vector2(Box.X, Box.Y+Box.Height-64),
+                Text = "Close"
+            };
+            CloseButton.Click += Close_click;
         }
 
-        public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        private void Close_click(object sender, EventArgs e)
         {
-            var colour = Color.White;
-
-            if (_isHovering)
-                colour = Color.Gray;
-
-            spriteBatch.Draw(_texture, Rectangle, colour);
-            /*
-            if (!string.IsNullOrEmpty(DisplayText))
+            if (sender is Button buttonCliked)
             {
-                var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(DisplayText).X / 2);
-                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(DisplayText).Y / 2);
+                Console.WriteLine("close");
+                IsVisible = false;
+            }
+        }
 
-                spriteBatch.DrawString(_font, DisplayText, new Vector2(x, y), PenColour);
-            }*/
+        private void ActionButton_Click(object sender, EventArgs e)
+        {
+            if(sender is Button buttonCliked)
+            {
+                Console.WriteLine(buttonCliked.Name);
+                if(FeatureAttached!=null)
+                {
+                    FeatureAttached.Answer(int.Parse(buttonCliked.Name));
+                    Text = Result;
+                }                
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            _previousMouse = _currentMouse;
-            _currentMouse = Mouse.GetState();
-
-            var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
-
-            _isHovering = false;
-
-            if (mouseRectangle.Intersects(Rectangle))
+            if (FeatureAttached.Active)
             {
-                _isHovering = true;
-
-                if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
-                {
-                    Click?.Invoke(this, new EventArgs());
-                }
+                foreach (var component in ActionButtons)
+                    component.Update(gameTime);
+            }
+            else
+            {
+                CloseButton.Update(gameTime);
             }
         }
+
+
+
+        public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        {
+            if(IsVisible)
+            {
+                var colour = Color.White;
+                spriteBatch.Draw(_texture, Box, colour);
+
+                if (FeatureAttached != null)
+                {
+                    spriteBatch.DrawString(_font, Text, new Vector2(Box.X+10, Box.Y+10), PenColour);
+                    if(FeatureAttached.Active)
+                    {
+                        foreach (var component in ActionButtons)
+                            component.Draw(gameTime, graphics, spriteBatch);
+                    }
+                    else
+                    {
+                        CloseButton.Draw(gameTime, graphics, spriteBatch);
+                    }
+                    
+                }
+
+
+                
+            }                     
+        }
+
+       
 
         #endregion
     }
