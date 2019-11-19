@@ -37,7 +37,10 @@ namespace Odysseus.Core
             StellarSystem item = new StellarSystem(
                 (StellarObject)gameCore.Random.Next(0, 11),
                 gameCore.Random.NextDouble() * 100,
-                new Vector2(gameCore.Random.NextDouble() * gameCore.GalaxyWidth, gameCore.Random.NextDouble() * gameCore.GalaxyHeight),
+                new Vector2(
+                    (gameCore.Random.NextDouble() * gameCore.GalaxyWidth ) - gameCore.GalaxyWidth/2, 
+                    (gameCore.Random.NextDouble() * gameCore.GalaxyHeight) - gameCore.GalaxyHeight/2
+                    ),
                 (_systemCount < _systemMaxAmount) ? GetFeature(): new Quest(gameCore, QuestType.End)
             );
          

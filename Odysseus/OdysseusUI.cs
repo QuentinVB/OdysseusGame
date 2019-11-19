@@ -64,6 +64,8 @@ namespace Odysseus
             this.IsMouseVisible = true;
 
             base.Initialize();
+
+            Core.GenerateNextDestinations();
         }
 
         /// <summary>
@@ -80,37 +82,11 @@ namespace Odysseus
             _font = Content.Load<SpriteFont>("Fonts/Font");
             var _button = Content.Load<Texture2D>("Controls/Button");
 
-            var nextButton = new Button(
-                "StarMap", 
-                Graphics,
-                _font,
-                new Rectangle(0, 180,64,64)
-                )
-            {
-                Texture= _button,
-                Text = "Star Map",
-                IsVisible = false
-            };
-            nextButton.Click += StarMapOpen;
-
-            var quitButton = new Button(
-                "quit",
-                Graphics,
-                _font,
-                new Rectangle(0, screenW - 64,64,64)
-                )
-            {
-                Texture = _button,
-                Text = "Quit",
-                IsVisible = true
-            };
-            quitButton.Click += QuitButton_Click;
-
             var shipConsole = new TextBox(
                 "shipConsole", 
                 Graphics,
                 _font,
-                new Rectangle(0,0,350,180)
+                new Rectangle(0,0,450,280)
                 )
             {
                 PenColour = Color.Lime,
@@ -119,7 +95,7 @@ namespace Odysseus
             };
 
 
-            var dialBox = new DialBox(
+            var dialBox = new FeatureBox(
                 "dialbox",
                 Graphics,
                 _font,
@@ -134,31 +110,57 @@ namespace Odysseus
                 Texture = _button
             };
 
-            /*
+            var nextButton = new Button(
+               "StarMap",
+               Graphics,
+               _font,
+               new Rectangle(0, shipConsole.Height, 64, 64)
+               )
+            {
+                Texture = _button,
+                Text = "Star Map",
+                IsVisible = false
+            };
+            nextButton.Click += StarMapOpen;
+
+            var quitButton = new Button(
+                "quit",
+                Graphics,
+                _font,
+                new Rectangle(0, screenW - 64, 64, 64)
+                )
+            {
+                Texture = _button,
+                Text = "Quit",
+                IsVisible = true
+            };
+            quitButton.Click += QuitButton_Click;
+            
             var galaxyMap = new GalaxyMap(
                 "galaxyMap",
-                Content.Load<Texture2D>("Sprites/galaxy"),
-                Content.Load<SpriteFont>("Fonts/Font"),
+                Graphics,
+                _font,                
                 new Rectangle(
-                    (int)(screenW * 0.25),
+                    (int)(screenW * 0.1),
                     (int)(screenH * 0.1),
-                    (int)(screenW * 0.5),
-                    (int)(screenH * 0.5)
-
+                    (int)(screenW * 0.8),
+                    (int)(screenH * 0.8)
                     )
 
                 )
             {
-                IsVisible = true
-             };
-             */
+                GalaxyTexture= Content.Load<Texture2D>("Sprites/galaxy"),
+                Texture= _button,
+                PenColour=Color.Red
+            };
+             
             _gameComponents = new List<Component>()
             {
                 nextButton,
                 quitButton,
                 shipConsole,
                 dialBox,
-                //galaxyMap
+                galaxyMap
             };
         }
         private void QuitButton_Click(object sender, System.EventArgs e)
@@ -169,8 +171,9 @@ namespace Odysseus
         
         private void StarMapOpen(object sender, System.EventArgs e)
         {
+
             _gameComponents.Find(x => x.Name == "galaxyMap").IsVisible = true;
-            //Core.PlayerShip.UpdateGameTurn();
+            
         }
 
         /// <summary>
@@ -194,62 +197,33 @@ namespace Odysseus
 
             if (Core.PlayerShip.IsAlive)
             {
-                Core.GenerateNextDestinations();
-                ((TextBox)(_gameComponents.Find(x=>x.Name == "shipConsole"))).Text= Core.PlayerShip.ToString();
+                ((TextBox)(_gameComponents.Find(x => x.Name == "shipConsole"))).Text = Core.PlayerShip.ToString();
 
-                var dialbox = ((DialBox)(_gameComponents.Find(x => x.Name == "dialbox")));
+                var dialbox = ((FeatureBox)(_gameComponents.Find(x => x.Name == "dialbox")));
                 if (Core.PlayerShip.Orbiting.Feature.Active)
                 {
+                    _gameComponents.Find(x => x.Name == "StarMap").IsVisible = false;
                     dialbox.IsVisible = true;
-                    if (dialbox.FeatureAttached==null)
+                    if (dialbox.FeatureAttached == null)
                     {
-                        dialbox.FeatureAttached = Core.PlayerShip.Orbiting.Feature;
+                        dialbox.AttachFeature(Core.PlayerShip.Orbiting.Feature);
                     }
                 }
                 else
-                {
-                    if(!dialbox.IsVisible)
+                {                  
+                    if (!dialbox.IsVisible)
                     {
-                       _gameComponents.Find(x => x.Name == "StarMap").IsVisible = true;
-
+                        dialbox.DetachFeature();
+                        _gameComponents.Find(x => x.Name == "StarMap").IsVisible = true;
+                        GalaxyMap galaxy = ((GalaxyMap)_gameComponents.Find(x => x.Name == "galaxyMap"));
+                        if (galaxy.CoreAttached == null)
+                        {
+                            galaxy.AttachCore(Core);
+                        }
                     }
                 }
-                /*
-                else
-                {
-                    Console.WriteLine($" 1. {Core.NextLeft}");
-                    Console.WriteLine($" 2. {Core.NextRight}");
-                    Console.Write("jump to : ");
-                }
 
-                
-                if (Core.PlayerShip.Orbiting.Feature.Active)
-                {
-                    Core.PlayerShip.Orbiting.Feature.Answer(answer);
-                }
-
-                else
-                {
-                    switch (answer)
-                    {
-                        case "1":
-
-                            Core.WarpShipTo(Core.NextLeft);
-                            break;
-                        case "2":
-                            Core.WarpShipTo(Core.NextRight);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                */
             }
-            else
-            {
-                //Console.ReadLine();
-            }
-
             foreach (var component in _gameComponents)
                 if(component.IsVisible)component.Update(gameTime);
 
