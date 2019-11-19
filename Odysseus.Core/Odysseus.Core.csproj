@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Choice.cs" />
     <Compile Include="Feature.cs" />
     <Compile Include="Features\AlienTemple.cs" />
     <Compile Include="Features\MetallicAsteroid.cs" />

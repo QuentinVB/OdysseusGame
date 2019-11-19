@@ -15,8 +15,18 @@ namespace Odysseus.Core
         {
             _price = Math.Round(Core.Random.NextDouble() * 50);
 
-            
-            
+            Choices = new string[2]
+            {
+                $"Refuel using { Core.PlayerShip.FuelType} aboard (if any).",
+                "Leave"
+            };
+            Results = new string[3]
+            {
+                "You leave the station",
+                "You dont have the required fuel in your tank, too bad...",
+                "The ship is refueled !"
+            };
+
         }
 
         private bool HasRightCargo { get {
@@ -31,12 +41,19 @@ namespace Odysseus.Core
 
         public override string Display => "An automated fuel reffinery station, just plug the right element and it refill your tanks (at half the rate) !";
 
-        public override string Choices => HasRightCargo ? $" 1. Refuel using {Core.PlayerShip.FuelType} aboard. \n 2. Leave"  : $" 1. Leave";
-
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            if(HasRightCargo && answer == "1" )
+            if (!HasRightCargo)
             {
+                ResultIndex = 1;
+                Active = false;
+
+                return;
+            }
+
+            if (answer == 0 )
+            {
+                ResultIndex = 2;
                 if((Core.PlayerShip.Cargo[_cargoIdx].Quantity / 2) +Core.PlayerShip.Fuel > Core.PlayerShip.FUELMAX)
                 {
                     double fuelDifference = Core.PlayerShip.FUELMAX - Core.PlayerShip.Fuel;
@@ -50,8 +67,8 @@ namespace Odysseus.Core
                     Core.PlayerShip.UnLoadCargo(_cargoIdx);
                 }   
             }
-            
-            Active = false;
+
+            if (answer >= 0) Active = false;
         }
 
        

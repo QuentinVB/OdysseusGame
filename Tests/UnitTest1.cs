@@ -11,7 +11,7 @@ namespace Tests
         public void GetSystems()
         {
             //arrange
-            GameCore core = new GameCore();
+            GameCore core = new GameCore(10);
             GalaxyGenerator sut = new GalaxyGenerator(core,10);
             //act
             var stellarSystem = sut.GetRoot();

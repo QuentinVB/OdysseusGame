@@ -24,7 +24,7 @@ namespace Odysseus.Core
         public override string ToString()
         {
             if (Quantity > 0) return $"[{Math.Round(Quantity,2)} {Type}]";
-            return "[]";
+            return "[_]";
         }
     }
     public enum Atom
@@ -73,18 +73,49 @@ namespace Odysseus.Core
 
         public double GalaxyWidth { get => _galaxyWidth; }
         public double GalaxyHeight { get => _galaxyHeight; }
+        /// <summary>
+        /// Gets the player ship.
+        /// </summary>
+        /// <value>
+        /// The player ship.
+        /// </value>
         public Ship PlayerShip { get => _playerShip; }
+        /// <summary>
+        /// Gets the first stellar system.
+        /// </summary>
+        /// <value>
+        /// The root.
+        /// </value>
         public StellarSystem Root { get => _root; }
         public Random Random { get => _random; }
+        /// <summary>
+        /// Gets the left next stellar system.
+        /// </summary>
+        /// <value>
+        /// The next left.
+        /// </value>
         public StellarSystem NextLeft { get => _nextLeft; private set => _nextLeft = value; }
+        /// <summary>
+        /// Gets the leftright next stellar system.
+        /// </summary>
+        /// <value>
+        /// The next right.
+        /// </value>
         public StellarSystem NextRight { get => _nextRight; private set => _nextRight = value; }
-        public bool NextSystemAreGenerated { get; private set; }
+        private bool NextSystemAreGenerated { get;  set; }
 
+        /// <summary>
+        /// Generates a random cargo.
+        /// </summary>
+        /// <returns></returns>
         public Cargo GenerateCargo()
         {
             return new Cargo((Atom)Random.Next(1, 11), Random.NextDouble() * 100);
         }
 
+        /// <summary>
+        /// Generates the next destinations.
+        /// </summary>
         public void GenerateNextDestinations()
         {
             if(!NextSystemAreGenerated)
@@ -94,7 +125,10 @@ namespace Odysseus.Core
                 NextSystemAreGenerated = true;
             }           
         }
-
+        /// <summary>
+        /// Warps the ship to the <cref>the destination</cref>.
+        /// </summary>
+        /// <param name="destination">The destination.</param>
         public void WarpShipTo(StellarSystem destination)
         {
             _playerShip.WarpTo(destination);

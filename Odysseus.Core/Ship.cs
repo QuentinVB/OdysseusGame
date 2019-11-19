@@ -50,6 +50,7 @@ namespace Odysseus.Core
         public double Money { get => _money; }
         public Atom FuelType { get => _fuelType; }
         public double Fuel { get => _fuel; }
+        internal int CargoIdx { get => _cargoIdx;  }
 
         internal void BoardCrew(int crew)
         {
@@ -88,8 +89,8 @@ namespace Odysseus.Core
 
         public bool LoadCargo(Cargo cargo)
         {
-            if (_cargoIdx > _cargoBay.Length) return false;
-
+            if (_cargoIdx > _cargoBay.Length-1) return false;
+            //TODO : out of range
             _cargoBay[_cargoIdx] = cargo;
             _cargoIdx++;
             return true;

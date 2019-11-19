@@ -43,13 +43,15 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controls\SimpleTextDisplay.cs" />
-    <Compile Include="Controls\TextDisplay.cs" />
+    <Compile Include="Controls\FeatureBox.cs" />
+    <Compile Include="Controls\DrawableComponent.cs" />
+    <Compile Include="Controls\GalaxyMap.cs" />
+    <Compile Include="Controls\DialBox.cs" />
+    <Compile Include="Controls\TextComponent.cs" />
+    <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Controls\Component.cs" />
-    <Compile Include="Demo.cs" />
     <Compile Include="OdysseusUI.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

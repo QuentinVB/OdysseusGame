@@ -8,25 +8,34 @@ namespace Odysseus.Core
 {
     public class Gift : Feature
     {
-        GameCore _core;
-        private Cargo _cargo ;
-
-
+        private Cargo _cargo;
 
         public Gift(GameCore core) : base(core)
         {
-            this._core = core;
-            _cargo = _core.GenerateCargo();
+            _cargo = Core.GenerateCargo();
+
+            Choices = new string[2]
+            {
+                "Pick the cargo.",
+                "Leave",
+            };
+            Results = new string[2]
+            {
+                "You left the container forever alone in space...",
+                $"You gain a cargo of  {Math.Round(_cargo.Quantity)} {_cargo.Type}s"
+            };
         }
 
         public override string Display => $"A cargo is slowly drifting in space, a scan reveal {Math.Round(_cargo.Quantity)} of {_cargo.Type}";
 
-        public override string Choices => $" 1. Pick the cargo \n 2. Leave";
-
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            if(answer =="1")_core.PlayerShip.LoadCargo(_cargo);
-            Active = false;
+            if (answer == 0)
+            {
+                ResultIndex = 1;
+                Core.PlayerShip.LoadCargo(_cargo);
+            }
+            if (answer >= 0) Active = false;
         }
     }
 }

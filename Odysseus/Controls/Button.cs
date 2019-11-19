@@ -9,19 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Odysseus.Controls
 {
-    public class Button : Component
+    public class Button : TextComponent
     {
         #region Fields
 
         private MouseState _currentMouse;
 
-        private SpriteFont _font;
-
         private bool _isHovering;
 
         private MouseState _previousMouse;
-
-        private Texture2D _texture;
 
         #endregion
 
@@ -31,48 +27,34 @@ namespace Odysseus.Controls
 
         public bool Clicked { get; private set; }
 
-        public Color PenColour { get; set; }
-
-        public Vector2 Position { get; set; }
-
-        public Rectangle Rectangle
-        {
-            get
-            {
-                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);
-            }
-        }
-
-        public string Text { get; set; }
-
         #endregion
 
         #region Methods
 
-        public Button(string name, Texture2D texture, SpriteFont font):base(name)
+        public Button(string name, GraphicsDeviceManager graphics, SpriteFont font, Rectangle position) 
+            :base(name, graphics, font, position)
         {
-            _texture = texture;
 
-            _font = font;
 
-            PenColour = Color.Black;
         }
 
-        public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var colour = Color.White;
+            var colour = BGColour;
 
             if (_isHovering)
+                //TODO : BG COLOUR / 2
                 colour = Color.Gray;
 
-            spriteBatch.Draw(_texture, Rectangle, colour);
+            spriteBatch.Draw(Texture ?? MonoColorRect, Box, colour);
 
             if (!string.IsNullOrEmpty(Text))
             {
-                var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(Text).X / 2);
-                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(Text).Y / 2);
+                //text centering problem
+                var x = (Box.X + (Box.Width / 2)) - (Font.MeasureString(Text).X / 2);
+                var y = (Box.Y + (Box.Height / 2)) - (Font.MeasureString(Text).Y / 2);
 
-                spriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
+                spriteBatch.DrawString(Font, Text, new Vector2(x, y), PenColour);
             }
         }
 
@@ -80,12 +62,13 @@ namespace Odysseus.Controls
         {
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();
+            
 
-            var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
+           var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
 
             _isHovering = false;
 
-            if (mouseRectangle.Intersects(Rectangle))
+            if (mouseRectangle.Intersects(Box))
             {
                 _isHovering = true;
 

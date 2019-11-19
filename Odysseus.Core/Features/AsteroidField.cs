@@ -11,18 +11,14 @@ namespace Odysseus.Core
 
         public AsteroidField(GameCore core) : base(core)
         {
+           
         }
 
-        public override string Display => "ALERT ! This system is full of asteroids !";
+        public override string Display => $"ALERT ! This system is full of asteroids ! \nYour ship took {Core.PlayerShip.TakeDamage(Core.Random.Next(5, 12))} damages.";
 
-        public override string Choices { get {
-                Active = false;
-                return $"Your ship took {Core.PlayerShip.TakeDamage(Core.Random.Next(5, 12))} damages.";
-            } }
-
-        public override void Answer(string answer)
+        public override void Answer(int answer)
         {
-            throw new NotImplementedException();
+            Active = false;
         }
     }
 }

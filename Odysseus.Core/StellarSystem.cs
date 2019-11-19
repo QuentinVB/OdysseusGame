@@ -37,7 +37,11 @@ namespace Odysseus.Core
         public StellarObject Type { get => _type;  }
         public double Mass { get => _mass; }
         internal Vector2 Position { get => _position;  }
+        public int X { get => (int)_position.X;  }
+        public int Y { get => (int)_position.Y; }
         public Feature Feature { get => _feature;  }
+
+        public string MapString { get=> $"*{Position}\n{Type}"; }
 
         public override string ToString()
         {

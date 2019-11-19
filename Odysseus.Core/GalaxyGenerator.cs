@@ -12,24 +12,20 @@ namespace Odysseus.Core
         int _systemCount;
         int _systemMaxAmount;
 
-
-
         public GalaxyGenerator(GameCore gameCore, int systemMaxDepth)
         {
             this._systemCount = 0;
             this._systemMaxAmount = systemMaxDepth * 2;
             this.gameCore = gameCore;
         }
-
-
-        
+   
         public StellarSystem GetRoot()
         {
             StellarSystem root = new StellarSystem(
                 StellarObject.YellowDwarf,
                 gameCore.Random.NextDouble() * 100,
                 new Vector2(0, 0),
-                new Quest(gameCore, QuestType.Start)
+                new GasGiant(gameCore)//new Quest(gameCore, QuestType.Start)
             );          
 
             return root;
@@ -41,7 +37,10 @@ namespace Odysseus.Core
             StellarSystem item = new StellarSystem(
                 (StellarObject)gameCore.Random.Next(0, 11),
                 gameCore.Random.NextDouble() * 100,
-                new Vector2(gameCore.Random.NextDouble() * gameCore.GalaxyWidth, gameCore.Random.NextDouble() * gameCore.GalaxyHeight),
+                new Vector2(
+                    (gameCore.Random.NextDouble() * gameCore.GalaxyWidth ) - gameCore.GalaxyWidth/2, 
+                    (gameCore.Random.NextDouble() * gameCore.GalaxyHeight) - gameCore.GalaxyHeight/2
+                    ),
                 (_systemCount < _systemMaxAmount) ? GetFeature(): new Quest(gameCore, QuestType.End)
             );
          
@@ -50,7 +49,8 @@ namespace Odysseus.Core
 
         private Feature GetFeature()
         {
-            switch (gameCore.Random.Next(0,11))
+
+            switch (gameCore.Random.Next(0, 11))
             {
                 case 0: return new Gift(gameCore);
                 case 1: return new Nothing(gameCore);
@@ -66,6 +66,8 @@ namespace Odysseus.Core
                 default:
                     break;
             }
+            
+            
             return new Nothing(gameCore);
         }
     }
