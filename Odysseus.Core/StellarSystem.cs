@@ -41,7 +41,7 @@ namespace Odysseus.Core
         public int Y { get => (int)_position.Y; }
         public Feature Feature { get => _feature;  }
 
-        public string MapString { get=> $"*{Position}\n{Type}"; }
+        public string MapString { get=> $"{Position}\n\n{Type}"; }
 
         public override string ToString()
         {

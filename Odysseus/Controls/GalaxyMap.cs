@@ -23,6 +23,7 @@ namespace Odysseus.Controls
         #region Properties
         public Button[] Destinations { get => _destinations; set => _destinations = value; }
         public Texture2D GalaxyTexture { get; internal set; }
+        public Texture2D StarTexture { get; internal set; }
         public GameCore CoreAttached { get => _core; private set => _core = value; }
         public Vector2 Center { get => new Vector2(Box.X + Box.Width / 2, Box.Y + Box.Height / 2); }
         #endregion
@@ -64,7 +65,7 @@ namespace Odysseus.Controls
                 index.ToString(),
                 Graphics,
                 Font,
-                new Rectangle((int)position.X, (int)position.Y, 80,64)
+                new Rectangle((int)position.X, (int)position.Y, 100,64)
                 )
             {
                 Text = system.MapString,
@@ -107,18 +108,28 @@ namespace Odysseus.Controls
 
                 spriteBatch.Draw(GalaxyTexture, Box, colour);
 
+
                 if (CoreAttached != null)
                 {
-                        spriteBatch.DrawString(
+                    var position = ConvertMapPositionToGlobal(CoreAttached.PlayerShip.Orbiting.X, CoreAttached.PlayerShip.Orbiting.Y);
+
+                    spriteBatch.Draw(StarTexture, position, Color.DarkGray);
+
+                    spriteBatch.DrawString(
                         Font,
-                        $"*\n{CoreAttached.PlayerShip.Orbiting.MapString}",
-                        ConvertMapPositionToGlobal(CoreAttached.PlayerShip.Orbiting.X, CoreAttached.PlayerShip.Orbiting.Y),
+                        CoreAttached.PlayerShip.Orbiting.MapString,
+                        position,
                         PenColour
                         );
                     if (Destinations != null)
                     {
                         foreach (var component in Destinations)
-                        component.Draw(gameTime, spriteBatch);
+                        {
+                            spriteBatch.Draw(StarTexture, component.Box.Location.ToVector2(), colour);
+
+                            component.Draw(gameTime, spriteBatch);
+                        }
+                        
                     }
                 }  
             }   

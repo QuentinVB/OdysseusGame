@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Odysseus.Core
 {
-    class AsteroidField : Feature
+    public class AsteroidField : Feature
     {
 
         public AsteroidField(GameCore core) : base(core)

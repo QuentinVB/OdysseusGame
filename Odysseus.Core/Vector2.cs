@@ -41,5 +41,15 @@ namespace Odysseus.Core
         {
             return $"{Math.Round(X,2)}:{Math.Round(Y, 2)}";
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 367829482;
+            hashCode = hashCode * -1521134295 + _x.GetHashCode();
+            hashCode = hashCode * -1521134295 + _y.GetHashCode();
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            return hashCode;
+        }
     }
 }

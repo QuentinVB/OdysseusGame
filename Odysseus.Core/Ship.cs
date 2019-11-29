@@ -19,7 +19,7 @@ namespace Odysseus.Core
         double _hullFactor = 0.9;
         int _hull = 100;
         int _oxygenSupply = 100;
-        Atom _fuelType = Atom.Hydrogen;
+        readonly Atom _fuelType = Atom.Hydrogen;
         double _lifeSupportFactor = 0.4;
         int _crew = 10;
 
@@ -107,7 +107,7 @@ namespace Odysseus.Core
                 _cargoBay[i] = _cargoBay[i + 1];
             }
 
-            _cargoIdx--;
+            _cargoIdx=Math.Max(_cargoIdx-1,0);
             return cargo;
         }
 

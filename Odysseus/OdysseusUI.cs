@@ -16,11 +16,12 @@ namespace Odysseus
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
+        Texture2D _asteroidesBG;
         Texture2D _planetBG;
         Texture2D _ship;
         SpriteFont _font;
         Vector2 _shipPos;
-
+        
         readonly int screenW;
         readonly int screenH;
 
@@ -43,7 +44,7 @@ namespace Odysseus
             
             _graphics.PreferredBackBufferWidth = screenW;
             _graphics.PreferredBackBufferHeight = screenH;
-            //_graphics.ToggleFullScreen();
+            _graphics.ToggleFullScreen();
 
             _graphics.ApplyChanges();
 
@@ -59,7 +60,7 @@ namespace Odysseus
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            core = new GameCore(10);
+            core = new GameCore(32);
 
             this.IsMouseVisible = true;
 
@@ -78,6 +79,7 @@ namespace Odysseus
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
             _planetBG = Content.Load<Texture2D>("Sprites/planet1");
+            _asteroidesBG = Content.Load<Texture2D>("Sprites/asteroides");
             _ship = Content.Load<Texture2D>("Sprites/ship");
             _font = Content.Load<SpriteFont>("Fonts/Font");
             var _button = Content.Load<Texture2D>("Controls/Button");
@@ -114,7 +116,7 @@ namespace Odysseus
                "StarMap",
                Graphics,
                _font,
-               new Rectangle(0, shipConsole.Height, 64, 64)
+               new Rectangle(shipConsole.Width + 64, 64, 64, 64)
                )
             {
                 Texture = _button,
@@ -127,7 +129,7 @@ namespace Odysseus
                 "quit",
                 Graphics,
                 _font,
-                new Rectangle(0, screenW - 64, 64, 64)
+                new Rectangle(screenW - 64, 0, 64, 64)
                 )
             {
                 Texture = _button,
@@ -150,7 +152,8 @@ namespace Odysseus
                 )
             {
                 GalaxyTexture= Content.Load<Texture2D>("Sprites/galaxy"),
-                Texture= _button,
+                StarTexture = Content.Load<Texture2D>("Sprites/star"),
+                Texture = _button,
                 PenColour=Color.Red
             };
              
@@ -250,8 +253,16 @@ namespace Odysseus
 
             // TODO: Add your drawing code here
             SpriteBatch.Begin();
-            SpriteBatch.Draw(_planetBG, new Rectangle(Point.Zero, new Point(screenW,screenH)), Color.White);
+
+            Texture2D background= _planetBG;
+            if(Core.PlayerShip.Orbiting.Feature is AsteroidField)
+            {
+                background = _asteroidesBG;
+            }
+
+            SpriteBatch.Draw(background, new Rectangle(Point.Zero, new Point(screenW,screenH)), Color.White);
             SpriteBatch.Draw(_ship, _shipPos, Color.White);
+            //TODO: 
             
             foreach (var component in _gameComponents)
                 if (component.IsVisible) component.Draw(gameTime, SpriteBatch);

@@ -10,7 +10,7 @@ namespace Odysseus.Core
     {
         private GameCore gameCore;
         int _systemCount;
-        int _systemMaxAmount;
+        readonly int _systemMaxAmount;
 
         public GalaxyGenerator(GameCore gameCore, int systemMaxDepth)
         {
@@ -25,7 +25,7 @@ namespace Odysseus.Core
                 StellarObject.YellowDwarf,
                 gameCore.Random.NextDouble() * 100,
                 new Vector2(0, 0),
-                new GasGiant(gameCore)//new Quest(gameCore, QuestType.Start)
+                new Quest(gameCore, QuestType.Start)//new AsteroidField(gameCore)//
             );          
 
             return root;
@@ -34,22 +34,52 @@ namespace Odysseus.Core
         public StellarSystem GetStellarSystem()
         {
             _systemCount++;
+            StellarObject type = (StellarObject)gameCore.Random.Next(0, 11);
             StellarSystem item = new StellarSystem(
-                (StellarObject)gameCore.Random.Next(0, 11),
+                type,
                 gameCore.Random.NextDouble() * 100,
                 new Vector2(
                     (gameCore.Random.NextDouble() * gameCore.GalaxyWidth ) - gameCore.GalaxyWidth/2, 
                     (gameCore.Random.NextDouble() * gameCore.GalaxyHeight) - gameCore.GalaxyHeight/2
                     ),
-                (_systemCount < _systemMaxAmount) ? GetFeature(): new Quest(gameCore, QuestType.End)
+                (_systemCount < _systemMaxAmount) ? GetFeature(type) : new Quest(gameCore, QuestType.End)
             );
          
             return item;
         }
 
-        private Feature GetFeature()
+        private Feature GetFeature(StellarObject type)
         {
-
+            //TODO : generate feature according to the star type
+            /*
+            switch (type)
+            {
+                case StellarObject.BrownDwarf:
+                    break;
+                case StellarObject.WhiteDwarf:
+                    break;
+                case StellarObject.RedDwarf:
+                    break;
+                case StellarObject.YellowDwarf:
+                    break;
+                case StellarObject.RedGiant:
+                    break;
+                case StellarObject.RedSuperGiant:
+                    break;
+                case StellarObject.BlueSuperGiant:
+                    break;
+                case StellarObject.BinaryStar:
+                    break;
+                case StellarObject.NeutronStar:
+                    break;
+                case StellarObject.BlackHole:
+                    break;
+                case StellarObject.RoguePlanet:
+                    break;
+                default:
+                    break;
+            }
+            */
             switch (gameCore.Random.Next(0, 11))
             {
                 case 0: return new Gift(gameCore);

@@ -9,7 +9,7 @@ namespace Odysseus.Core
     class AlienTemple : Feature
     {
         Cargo _reward;
-        int _loss;
+        readonly int _loss;
 
         public AlienTemple(GameCore core) : base(core)
         {
