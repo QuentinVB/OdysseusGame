@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Odysseus.Core
 {
-    class ShopCargo : Feature
+    public class ShopCargo : Feature
     {
         readonly List<Cargo> _cargoBay;
         double _sellFactor;

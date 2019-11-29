@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Odysseus.Core
 {
-    class MercenaryGuild : Feature
+    public class MercenaryGuild : Feature
     {
         double _price;
 

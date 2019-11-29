@@ -80,6 +80,7 @@ namespace Odysseus.Core
                     break;
             }
             */
+            /*
             switch (gameCore.Random.Next(0, 11))
             {
                 case 0: return new Gift(gameCore);
@@ -96,9 +97,9 @@ namespace Odysseus.Core
                 default:
                     break;
             }
+            */
             
-            
-            return new Nothing(gameCore);
+            return new Gift(gameCore);
         }
     }
 }

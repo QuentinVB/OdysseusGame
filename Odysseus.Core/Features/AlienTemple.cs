@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Odysseus.Core
 {
-    class AlienTemple : Feature
+    public class AlienTemple : Feature
     {
         Cargo _reward;
         readonly int _loss;

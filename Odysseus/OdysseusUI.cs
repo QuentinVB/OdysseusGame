@@ -18,6 +18,9 @@ namespace Odysseus
 
         Texture2D _asteroidesBG;
         Texture2D _planetBG;
+        Texture2D _spaceStationBG;
+        Texture2D _damagedSpaceStation;
+        Texture2D _alienTemple;
         Texture2D _ship;
         SpriteFont _font;
         Vector2 _shipPos;
@@ -44,7 +47,7 @@ namespace Odysseus
             
             _graphics.PreferredBackBufferWidth = screenW;
             _graphics.PreferredBackBufferHeight = screenH;
-            _graphics.ToggleFullScreen();
+            //_graphics.ToggleFullScreen();
 
             _graphics.ApplyChanges();
 
@@ -79,11 +82,15 @@ namespace Odysseus
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
             _planetBG = Content.Load<Texture2D>("Sprites/planet1");
+            _spaceStationBG= Content.Load<Texture2D>("Sprites/spaceStation");
             _asteroidesBG = Content.Load<Texture2D>("Sprites/asteroides");
+            _damagedSpaceStation = Content.Load<Texture2D>("Sprites/damaged_space_station");
+            _asteroidesBG = Content.Load<Texture2D>("Sprites/asteroides");
+            _alienTemple = Content.Load<Texture2D>("Sprites/alienTemple");
             _ship = Content.Load<Texture2D>("Sprites/ship");
             _font = Content.Load<SpriteFont>("Fonts/Font");
             var _button = Content.Load<Texture2D>("Controls/Button");
-
+            
             var shipConsole = new TextBox(
                 "shipConsole", 
                 Graphics,
@@ -170,8 +177,6 @@ namespace Odysseus
         {
             Exit();
         }
-
-        
         private void StarMapOpen(object sender, System.EventArgs e)
         {
 
@@ -200,6 +205,7 @@ namespace Odysseus
 
             if (Core.PlayerShip.IsAlive)
             {
+                //Improve select
                 ((TextBox)(_gameComponents.Find(x => x.Name == "shipConsole"))).Text = Core.PlayerShip.ToString();
 
                 var dialbox = ((FeatureBox)(_gameComponents.Find(x => x.Name == "dialbox")));
@@ -236,7 +242,7 @@ namespace Odysseus
             //if (kstate.IsKeyDown(Keys.Left))
             //ballPosition.X -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            MouseState mouse = Mouse.GetState();
+            //MouseState mouse = Mouse.GetState();
             //http://rbwhitaker.wikidot.com/mouse-input
 
             base.Update(gameTime);
@@ -254,21 +260,50 @@ namespace Odysseus
             // TODO: Add your drawing code here
             SpriteBatch.Begin();
 
-            Texture2D background= _planetBG;
-            if(Core.PlayerShip.Orbiting.Feature is AsteroidField)
-            {
-                background = _asteroidesBG;
-            }
-
-            SpriteBatch.Draw(background, new Rectangle(Point.Zero, new Point(screenW,screenH)), Color.White);
+            SetGraphics(Core.PlayerShip.Orbiting.Feature);
+            
             SpriteBatch.Draw(_ship, _shipPos, Color.White);
             //TODO: 
             
             foreach (var component in _gameComponents)
                 if (component.IsVisible) component.Draw(gameTime, SpriteBatch);
+
             SpriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void SetGraphics(Feature feature)
+        {
+            Texture2D background = _planetBG;
+            Texture2D bonusDraw = _damagedSpaceStation;
+            bool bonus = false;
+            
+            if (feature is AsteroidField)
+            {
+                background = _asteroidesBG;
+            }
+            else if(
+                feature is MercenaryGuild
+                || feature is RepairStation
+                || feature is ShopCargo)
+            {
+                background = _spaceStationBG;
+            }
+            else if (feature is AlienTemple)
+            {
+                background = _alienTemple;
+            }
+            else if (feature is Gift)
+            {
+                bonus = true;
+                bonusDraw = _damagedSpaceStation;
+            }
+
+            SpriteBatch.Draw(background, new Rectangle(Point.Zero, new Point(screenW, screenH)), Color.White);
+
+            if(bonus)SpriteBatch.Draw(bonusDraw, new Rectangle(new Point((int)(screenW * 0.1), (int)( screenH * 0.6)), new Point(screenW, screenH)), Color.White);
+
         }
     }
 }

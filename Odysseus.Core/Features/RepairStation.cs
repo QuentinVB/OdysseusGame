@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Odysseus.Core
 {
-    class RepairStation : Feature
+    public class RepairStation : Feature
     {
         double _price;
 
